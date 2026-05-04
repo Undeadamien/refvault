@@ -12,8 +12,9 @@ class ImageCreate(ImageBase):
     pass
 
 
-class Image(ImageBase):
+class ImageResponse(ImageBase):
     id: int
     created_at: datetime
     updated_at: Optional[datetime] = None
+
     model_config = ConfigDict(from_attributes=True)
