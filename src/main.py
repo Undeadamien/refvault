@@ -19,6 +19,21 @@ def root():
     return RedirectResponse("/docs")
 
 
+@app.get("/image")
+def get_image():
+    return "placeholder"
+
+
+@app.post("/image")
+def post_image():
+    return "placeholder"
+
+
+@app.delete("/image")
+def delete_image():
+    return "placeholder"
+
+
 def main():
     uvicorn.run("main:app", host=SERVER_ADDR, port=SERVER_PORT, reload=True)
 
