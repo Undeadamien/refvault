@@ -4,6 +4,7 @@ import uvicorn
 from fastapi import FastAPI
 from fastapi.responses import RedirectResponse
 
+import models  # pyright: ignore[reportUnusedImport]
 from database import Base, engine
 
 Base.metadata.create_all(bind=engine)
