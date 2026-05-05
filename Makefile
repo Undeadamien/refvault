@@ -11,5 +11,6 @@ clean:
 	docker compose down -v
 
 re: clean
+	docker compose up --build -d
 
 .PHONY: up down build rebuild clean re
