@@ -1,11 +1,14 @@
 from datetime import datetime
-from typing import Optional
+from typing import Annotated, Optional
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import AfterValidator, BaseModel, ConfigDict, HttpUrl
+
+# Validate as HttpUrl, then convert to str
+UrlStr = Annotated[HttpUrl, AfterValidator(str)]
 
 
 class ImageBase(BaseModel):
-    url: str
+    url: UrlStr
 
 
 class ImageCreate(ImageBase):

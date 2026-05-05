@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import os
 from typing import List
 
 import uvicorn
@@ -7,14 +8,14 @@ from fastapi import Depends, FastAPI, HTTPException
 from fastapi.responses import RedirectResponse
 from sqlalchemy.orm import Session
 
-import models  # must be imported for create_all
+import models
 from database import Base, engine, get_db
 from schemas import ImageCreate, ImageResponse
 
 Base.metadata.create_all(bind=engine)
 
-SERVER_ADDR = "127.0.0.1"
-SERVER_PORT = 8000
+SERVER_ADDR = os.getenv("SERVER_ADDR", "0.0.0.0")
+SERVER_PORT = int(os.getenv("SERVER_PORT", "8000"))
 
 app = FastAPI(title="RefVault")
 
