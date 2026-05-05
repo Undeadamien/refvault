@@ -13,14 +13,11 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
-
   app:
     build: .
     container_name: refvault-app
     ports:
       - "${SERVER_PORT}:${SERVER_PORT}"
-    volumes:
-      - ./src:/app/src
     env_file:
       - .env
     environment:
@@ -28,6 +25,5 @@ services:
     depends_on:
       db:
         condition: service_healthy
-
 volumes:
   db_data:
