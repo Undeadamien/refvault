@@ -1,4 +1,5 @@
 up:
+	@if [ ! -f .env ]; then cp .env.example .env; fi
 	docker compose up -d
 
 down:
@@ -7,10 +8,14 @@ down:
 build:
 	docker compose build
 
+logs:
+	docker logs -f refvault-app
+
 clean:
 	docker compose down -v
 
 re: clean
 	docker compose up --build -d
 
-.PHONY: up down build rebuild clean re
+.PHONY: up down build logs clean re
+
