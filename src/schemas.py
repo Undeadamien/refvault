@@ -1,10 +1,11 @@
 from datetime import datetime
 from typing import Annotated, List, Optional
 
-from pydantic import AfterValidator, BaseModel, ConfigDict, HttpUrl
+from pydantic import BaseModel, BeforeValidator, ConfigDict, HttpUrl, TypeAdapter
 
-# Validate as HttpUrl, then convert to str
-UrlStr = Annotated[HttpUrl, AfterValidator(str)]
+UrlStr = Annotated[
+    str, BeforeValidator(lambda v: str(TypeAdapter(HttpUrl).validate_python(v)))
+]
 
 
 class TagCreate(BaseModel):
