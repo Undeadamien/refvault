@@ -13,7 +13,10 @@ app.include_router(tags.router)
 
 def main():
     uvicorn.run(
-        "main:app", host=settings.server_addr, port=settings.server_port, reload=True
+        "src.main:app",
+        host=settings.server_addr,
+        port=settings.server_port,
+        reload=True,
     )
 
 

@@ -8,8 +8,9 @@ from sqlalchemy.ext.asyncio import async_engine_from_config
 from alembic import context
 
 # Package-based imports
-from src.database import DATABASE_URL, Base
-from src.models import Image, Tag  # Register models for autogenerate
+from src.config import settings
+from src.database import Base
+from src.models import *
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -25,7 +26,7 @@ if config.config_file_name is not None:
 target_metadata = Base.metadata
 
 # Set the sqlalchemy.url in the config
-config.set_main_option("sqlalchemy.url", DATABASE_URL)
+config.set_main_option("sqlalchemy.url", settings.database_url)
 
 
 def run_migrations_offline() -> None:
