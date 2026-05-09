@@ -6,8 +6,8 @@ from contextlib import asynccontextmanager
 import uvicorn
 from fastapi import FastAPI
 
-from database import Base, engine
-from routes import images, tags
+from src.database import Base, engine
+from src.routes import images, tags
 
 SERVER_ADDR = os.getenv("SERVER_ADDR", "0.0.0.0")
 SERVER_PORT = int(os.getenv("SERVER_PORT", "8000"))

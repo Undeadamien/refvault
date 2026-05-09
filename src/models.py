@@ -2,7 +2,7 @@ from sqlalchemy import Column, DateTime, ForeignKey, Integer, String, Table
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 
-from database import Base
+from src.database import Base
 
 image_tags = Table(
     "image_tags",

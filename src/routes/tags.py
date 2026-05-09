@@ -1,11 +1,11 @@
 from typing import List
 
-from database import get_db
+from src.database import get_db
 from fastapi import APIRouter, Depends
-from schemas import TagResponse
+from src.schemas import TagResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from services import tags as tag_service
+from src.services import tags as tag_service
 
 router = APIRouter(prefix="/tags")
 

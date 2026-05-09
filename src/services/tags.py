@@ -1,6 +1,6 @@
 from typing import Sequence
 
-import models
+from src import models
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 

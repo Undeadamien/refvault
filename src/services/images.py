@@ -1,11 +1,11 @@
 from typing import Sequence
 
-import models
-from schemas import ImageCreate
+from src import models
+from src.schemas import ImageCreate
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from services.tags import get_or_create_tag
+from src.services.tags import get_or_create_tag
 
 
 async def get_all_images(db: AsyncSession) -> Sequence[models.Image]:

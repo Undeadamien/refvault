@@ -1,11 +1,11 @@
 from typing import List
 
-from database import get_db
+from src.database import get_db
 from fastapi import APIRouter, Depends, HTTPException
-from schemas import ImageCreate, ImageResponse, ImageTagsUpdate
+from src.schemas import ImageCreate, ImageResponse, ImageTagsUpdate
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from services import images as image_service
+from src.services import images as image_service
 
 router = APIRouter(prefix="/images")
 
