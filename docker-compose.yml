@@ -5,11 +5,11 @@ services:
     env_file:
       - .env
     ports:
-      - "${POSTGRES_PORT}:${POSTGRES_PORT}"
+      - "${POSTGRES_PORT:-5432}:${POSTGRES_PORT:-5432}"
     volumes:
       - db_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER:-postgres} -d $${POSTGRES_DB:-refvault}"]
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER:-refvault} -d $${POSTGRES_DB:-refvault}"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -17,7 +17,7 @@ services:
     build: .
     container_name: refvault-app
     ports:
-      - "${SERVER_PORT}:${SERVER_PORT}"
+      - "${SERVER_PORT:-8000}:${SERVER_PORT:-8000}"
     env_file:
       - .env
     environment:

@@ -1,5 +1,4 @@
 up:
-	@if [ ! -f .env ]; then cp .env.example .env; fi
 	docker compose up -d
 
 down:
@@ -18,4 +17,3 @@ re: clean
 	docker compose up --build -d
 
 .PHONY: up down build logs clean re
-
