@@ -11,6 +11,7 @@ class Settings(BaseSettings):
 
     server_addr: str = "0.0.0.0"
     server_port: int = 8000
+    reload: bool = True
 
     @property
     def database_url(self) -> str:

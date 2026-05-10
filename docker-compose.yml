@@ -28,6 +28,8 @@ services:
         required: false
     environment:
       POSTGRES_HOST: db
+    volumes:
+      - .:/app
     depends_on:
       db:
         condition: service_healthy
