@@ -32,18 +32,18 @@ async def engine():
 
 
 @pytest.fixture
-async def db_session(engine):
-    TestingSessionLocal = async_sessionmaker(
-        engine, expire_on_commit=False, class_=AsyncSession
-    )
-    async with TestingSessionLocal() as session:
-        yield session
+async def test_session(engine):
+    async with engine.connect() as conn:
+        await conn.begin()
+        session = async_sessionmaker(bind=conn, class_=AsyncSession)
+        async with session() as test_session:
+            yield test_session
 
 
 @pytest.fixture
-async def client(db_session):
+async def client(test_session):
     async def override_get_db():
-        yield db_session
+        yield test_session
 
     app.dependency_overrides[get_db] = override_get_db
     async with AsyncClient(
