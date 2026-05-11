@@ -1,0 +1,10 @@
+[run]
+source = src
+omit =
+    src/main.py
+    src/database.py
+    src/config.py
+
+[report]
+show_missing = True
+precision = 2

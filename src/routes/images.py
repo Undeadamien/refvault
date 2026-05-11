@@ -28,16 +28,16 @@ async def get_image(id: int, db: AsyncSession = Depends(get_db)):
     return img
 
 
-@router.delete("/{id}")
+@router.delete("/{id}", status_code=204)
 async def delete_image(id: int, db: AsyncSession = Depends(get_db)):
     await image_service.delete_image_by_id(db, id)
 
 
 @router.put("/{id}/tags", response_model=ImageResponse)
 async def set_tags(
-    image_id: int, payload: ImageTagsUpdate, db: AsyncSession = Depends(get_db)
+    id: int, payload: ImageTagsUpdate, db: AsyncSession = Depends(get_db)
 ):
-    img = await image_service.update_image_tags(db, image_id, payload.tags)
+    img = await image_service.update_image_tags(db, id, payload.tags)
     if not img:
         raise HTTPException(status_code=404, detail="Image not found")
     return img

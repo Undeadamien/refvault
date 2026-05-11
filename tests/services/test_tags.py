@@ -11,21 +11,20 @@ payloads = [
 
 @pytest.mark.asyncio
 async def test_get_all_tags(test_session):
-    expected = []
+    expected = set()
     for payload in payloads:
         await create_image(test_session, payload)
-        expected.extend(payload.tags)
+        expected.update(payload.tags)
     tags = await get_all_tags(test_session)
-    # todo: need improvements
-    assert sorted(t for t in expected) == sorted(t.name for t in tags)
+    assert {t.name for t in tags} == expected
 
 
 @pytest.mark.asyncio
 async def test_get_create_tag(test_session):
-    # todo: replace `get_all_tags`
-    empty = len(await get_all_tags(test_session)) == 0
-    assert empty
+    tags = await get_all_tags(test_session)
+    assert len(tags) == 0
     tag = await get_or_create_tag(test_session, "test")
     assert tag.name == "test"
     res = await get_all_tags(test_session)
-    assert len(res) == 1 and "test" == res[0].name
+    assert len(res) == 1
+    assert res[0].name == "test"
