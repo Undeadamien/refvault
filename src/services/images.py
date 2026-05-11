@@ -1,10 +1,10 @@
 from typing import Sequence
 
-from src import models
-from src.schemas import ImageCreate
-from sqlalchemy import select
+from sqlalchemy import delete, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from src import models
+from src.schemas import ImageCreate
 from src.services.tags import get_or_create_tag
 
 
@@ -22,9 +22,15 @@ async def create_image(db: AsyncSession, payload: ImageCreate) -> models.Image:
     img = models.Image(url=payload.url, name=payload.name)
     img.tags = [await get_or_create_tag(db, name) for name in payload.tags]
     db.add(img)
+    await db.flush()
     await db.commit()
     await db.refresh(img)
     return img
+
+
+async def delete_image_by_id(db: AsyncSession, image_id: int) -> None:
+    await db.execute(delete(models.Image).where(models.Image.id == image_id))
+    await db.commit()
 
 
 async def update_image_tags(
