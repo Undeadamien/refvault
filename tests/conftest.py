@@ -41,7 +41,7 @@ async def test_session(engine):
 
 
 @pytest.fixture
-async def client(test_session):
+async def test_client(test_session):
     async def override_get_db():
         yield test_session
 

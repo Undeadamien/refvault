@@ -47,3 +47,9 @@ async def test_update_image_tags(test_session):
     updated = await update_image_tags(test_session, img.id, new_tags)
     assert updated
     assert list(map(lambda x: str(x.name), updated.tags)) == new_tags
+
+
+@pytest.mark.asyncio
+async def test_update_image_tags_invalid(test_session):
+    updated = await update_image_tags(test_session, 0, [])
+    assert not updated
