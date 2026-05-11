@@ -22,7 +22,6 @@ async def create_image(db: AsyncSession, payload: ImageCreate) -> models.Image:
     img = models.Image(url=payload.url, name=payload.name)
     img.tags = [await get_or_create_tag(db, name) for name in payload.tags]
     db.add(img)
-    await db.flush()
     await db.commit()
     await db.refresh(img)
     return img
