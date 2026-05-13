@@ -1,6 +1,6 @@
 from typing import Sequence
 
-from sqlalchemy import delete, select
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src import models
@@ -27,9 +27,13 @@ async def create_image(db: AsyncSession, payload: ImageCreate) -> models.Image:
     return img
 
 
-async def delete_image_by_id(db: AsyncSession, image_id: int) -> None:
-    await db.execute(delete(models.Image).where(models.Image.id == image_id))
+async def delete_image_by_id(db: AsyncSession, image_id: int) -> bool:
+    img = await get_image_by_id(db, image_id)
+    if not img:
+        return False
+    await db.delete(img)
     await db.commit()
+    return True
 
 
 async def update_image_tags(

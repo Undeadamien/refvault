@@ -30,7 +30,9 @@ async def get_image(id: int, db: AsyncSession = Depends(get_db)):
 
 @router.delete("/{id}", status_code=204)
 async def delete_image(id: int, db: AsyncSession = Depends(get_db)):
-    await image_service.delete_image_by_id(db, id)
+    deleted = await image_service.delete_image_by_id(db, id)
+    if not deleted:
+        raise HTTPException(status_code=404, detail="Image not found")
 
 
 @router.put("/{id}/tags", response_model=ImageResponse)

@@ -64,7 +64,7 @@ async def test_delete_image(test_client, test_session):
 @pytest.mark.asyncio
 async def test_delete_image_invalid(test_client):
     response = await test_client.delete("/images/9999")
-    assert response.status_code == 204
+    assert response.status_code == 404
 
 
 @pytest.mark.asyncio
