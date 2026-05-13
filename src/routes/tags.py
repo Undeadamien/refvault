@@ -1,6 +1,6 @@
 from typing import List
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.database import get_db
@@ -13,3 +13,10 @@ router = APIRouter(prefix="/tags")
 @router.get("/", response_model=List[TagStr])
 async def get_tags(db: AsyncSession = Depends(get_db)):
     return await tag_service.get_all_tags(db)
+
+
+@router.delete("/{name}", status_code=204)
+async def delete_tag(name: TagStr, db: AsyncSession = Depends(get_db)):
+    deleted = await tag_service.delete_tag_by_name(db, name)
+    if not deleted:
+        raise HTTPException(status_code=404, detail="Tag not found")

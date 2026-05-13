@@ -12,7 +12,7 @@ def validate_url(url: str):
 
 def tag_to_str(v: Any) -> str:
     name = v.name if isinstance(v, Tag) else str(v)
-    return name.strip().capitalize()
+    return name.strip().lower()
 
 
 UrlStr = Annotated[str, BeforeValidator(validate_url)]

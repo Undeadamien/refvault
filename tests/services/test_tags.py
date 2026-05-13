@@ -28,3 +28,17 @@ async def test_get_create_tag(test_session):
     res = await get_all_tags(test_session)
     assert len(res) == 1
     assert res[0].name == "test"
+
+
+@pytest.mark.asyncio
+async def test_delete_tag(test_session):
+    await get_or_create_tag(test_session, "nature")
+    res = await delete_tag_by_name(test_session, "nature")
+    assert res is True
+    assert await get_all_tags(test_session) == []
+
+
+@pytest.mark.asyncio
+async def test_delete_tag_invalid(test_session):
+    res = await delete_tag_by_name(test_session, "nature")
+    assert res is False
