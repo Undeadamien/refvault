@@ -74,7 +74,9 @@ async def test_set_tags(test_client, test_session):
     test_session.add(img)
     await test_session.commit()
     await test_session.refresh(img)
-    response = await test_client.put(f"/images/{img.id}/tags", json={"tags": ["new_tag"]})
+    response = await test_client.put(
+        f"/images/{img.id}/tags", json={"tags": ["new_tag"]}
+    )
     assert response.status_code == 200
     data = response.json()
     assert data["tags"] == ["New_tag"]
