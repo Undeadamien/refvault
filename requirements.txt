@@ -20,7 +20,10 @@ MarkupSafe==3.0.3
 packaging==26.2
 pluggy==1.6.0
 psycopg2-binary==2.9.12
+pyjwt==2.12.1
+pwdlib[argon2]==0.3.0
 pydantic==2.13.3
+python-multipart==0.0.28
 pydantic-settings==2.14.1
 pydantic_core==2.46.3
 Pygments==2.20.0

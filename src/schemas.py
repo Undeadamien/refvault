@@ -42,3 +42,8 @@ class ImageResponse(ImageBase):
 
 class ImageTagsUpdate(BaseModel):
     tags: List[TagStr]
+
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str

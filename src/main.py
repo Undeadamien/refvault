@@ -4,9 +4,10 @@ import uvicorn
 from fastapi import FastAPI
 
 from src.config import settings
-from src.routes import images, tags
+from src.routes import auth, images, tags
 
 app = FastAPI(title="RefVault")
+app.include_router(auth.router)
 app.include_router(images.router)
 app.include_router(tags.router)
 
