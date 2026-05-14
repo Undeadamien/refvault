@@ -6,6 +6,8 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_asyn
 
 from src.database import Base, get_db
 from src.main import app
+from src.models import User
+from src.routes.auth import get_current_user
 
 TEST_DATABASE_URL = "sqlite+aiosqlite:///:memory:"
 
@@ -35,9 +37,19 @@ async def engine():
 async def test_session(engine):
     async with engine.connect() as conn:
         await conn.begin()
-        session = async_sessionmaker(bind=conn, class_=AsyncSession)
+        session = async_sessionmaker(
+            bind=conn, class_=AsyncSession, expire_on_commit=False
+        )
         async with session() as test_session:
             yield test_session
+
+
+@pytest.fixture
+async def test_user(test_session):
+    user = User(username="testuser", hashed_password="secret")
+    test_session.add(user)
+    await test_session.commit()
+    return user
 
 
 @pytest.fixture
@@ -46,6 +58,9 @@ async def test_client(test_session):
         yield test_session
 
     app.dependency_overrides[get_db] = override_get_db
+    app.dependency_overrides[get_current_user] = lambda: User(
+        id=1, username="test", hashed_password="secret"
+    )
     async with AsyncClient(
         transport=ASGITransport(app=app), base_url="http://test"
     ) as ac:

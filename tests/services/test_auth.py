@@ -20,6 +20,12 @@ async def test_token():
 
 
 @pytest.mark.asyncio
+async def test_token_invalid():
+    payload = decode_token("wrong_token")
+    assert payload is None
+
+
+@pytest.mark.asyncio
 async def test_user_found(test_session):
     hashed = hash_password("secret")
     test_session.add(User(username="testuser", hashed_password=hashed))
