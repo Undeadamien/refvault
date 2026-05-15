@@ -38,6 +38,7 @@ build-backend = "setuptools.build_meta"
 
 [tool.coverage.run]
 source = ["src"]
+concurrency = ["greenlet"]
 omit = ["src/main.py", "src/database.py", "src/config.py"]
 
 [tool.coverage.report]
