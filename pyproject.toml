@@ -25,8 +25,11 @@ refvault = "src.main:main"
 [project.optional-dependencies]
 dev = [
   "aiosqlite",
+  "black",
   "coverage",
   "httpx",
+  "isort",
+  "pyright",
   "pytest",
   "pytest-asyncio",
   "pytest-cov",
