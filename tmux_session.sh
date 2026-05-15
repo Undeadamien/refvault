@@ -13,7 +13,8 @@ fi
 
 if [ ! -f .venv/bin/activate ]; then python -m venv .venv; fi
 source ".venv/bin/activate"
-if [ -f requirements.txt ]; then python -m pip install -r requirements.txt; fi
+if [ -f pyproject.toml ]; then pip install --no-cache-dir -e ".[dev]"; fi
+if [ -f requirements.txt ]; then pip install --no-cache-dir -r requirements.txt; fi
 
 tmux new-session -d -s "$NAME_SESSION"
 
