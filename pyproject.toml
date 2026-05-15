@@ -1,0 +1,50 @@
+[project]
+name = "RefVault"
+version = "0.1.0"
+description = "Image tagging and vault service"
+requires-python = ">=3.12"
+dependencies = [
+  "alembic",
+  "asyncpg",
+  "fastapi",
+  "psycopg2-binary",
+  "pwdlib[argon2]",
+  "pydantic",
+  "pydantic-settings",
+  "pyjwt",
+  "python-dotenv",
+  "python-multipart",
+  "pyyaml",
+  "sqlalchemy[asyncio]",
+  "uvicorn[standard]",
+]
+
+[project.scripts]
+refvault = "src.main:main"
+
+[project.optional-dependencies]
+dev = [
+  "aiosqlite",
+  "coverage",
+  "httpx",
+  "pytest",
+  "pytest-asyncio",
+  "pytest-cov",
+]
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.coverage.run]
+source = ["src"]
+omit = ["src/main.py", "src/database.py", "src/config.py"]
+
+[tool.coverage.report]
+show_missing = true
+precision = 2
+
+[tool.pytest]
+pythonpath = ["."]
+testpaths = ["tests"]
+asyncio_mode = "auto"
