@@ -32,4 +32,7 @@ format:
 test:
 	@pytest --cov
 
-.PHONY: install up down build logs clean re lint test format
+docs:
+	@xdg-open http://localhost:8000/docs
+
+.PHONY: install up down build logs clean re lint test format docs
