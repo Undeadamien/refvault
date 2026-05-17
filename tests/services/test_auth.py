@@ -1,6 +1,13 @@
 import pytest
 
-from src.services.auth import *
+from src.models import User
+from src.services.auth import (
+    authenticate_user,
+    create_access_token,
+    decode_token,
+    hash_password,
+    verify_password,
+)
 
 
 @pytest.mark.asyncio
