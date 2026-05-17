@@ -1,22 +1,39 @@
-from typing import List
-
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from src.config import settings
 from src.database import get_db
 from src.routes.auth import get_current_user
-from src.schemas import ImageCreate, ImageResponse, ImageTagsUpdate
+from src.schemas import (
+    ImageCreate,
+    ImageResponse,
+    ImageTagsUpdate,
+    PaginatedImagesResponse,
+    Pagination,
+)
 from src.services import images as image_service
 
 router = APIRouter(prefix="/images")
 
 
-@router.get("/", response_model=List[ImageResponse])
+@router.get("/", response_model=PaginatedImagesResponse)
 async def get_images(
+    page: int = Query(1, ge=1),
+    per_page: int = Query(settings.pagination_size, ge=1),
     db: AsyncSession = Depends(get_db),
     user=Depends(get_current_user),
 ):
-    return await image_service.get_all_images(db, user.id)
+    images, total = await image_service.get_all_images(db, user.id, page, per_page)
+    last_page = max(1, (total + per_page - 1) // per_page)
+    return PaginatedImagesResponse(
+        items=[ImageResponse.model_validate(img) for img in images],
+        meta=Pagination(
+            current_page=page,
+            last_page=last_page,
+            per_page=per_page,
+            total=total,
+        ),
+    )
 
 
 @router.post("/", response_model=ImageResponse)

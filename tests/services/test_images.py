@@ -15,12 +15,14 @@ payloads = [
 ]
 
 
+# todo: add more test related to pagination
 @pytest.mark.asyncio
 async def test_get_all_images(test_session, test_user):
     for payload in payloads:
         await create_image(test_session, test_user.id, payload)
-    imgs = await get_all_images(test_session, test_user.id)
+    imgs, total = await get_all_images(test_session, test_user.id)
     assert len(imgs) == len(payloads)
+    assert total == len(payloads)
 
 
 @pytest.mark.asyncio

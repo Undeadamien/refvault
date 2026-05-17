@@ -1,6 +1,9 @@
 import pytest
 
+from src.config import settings
 
+
+# todo: add more test related to pagination
 @pytest.mark.asyncio
 async def test_get_images(test_client):
     await test_client.post(
@@ -10,7 +13,12 @@ async def test_get_images(test_client):
     res = await test_client.get("/images/")
     assert res.status_code == 200
     data = res.json()
-    assert data and len(data) == 1
+    assert data
+    assert len(data["items"]) == 1
+    assert data["meta"]["current_page"] == 1
+    assert data["meta"]["last_page"] == 1
+    assert data["meta"]["per_page"] == settings.pagination_size
+    assert data["meta"]["total"] == 1
 
 
 @pytest.mark.asyncio

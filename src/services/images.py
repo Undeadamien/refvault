@@ -1,9 +1,10 @@
 from typing import Sequence
 
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src import models
+from src.config import settings
 from src.schemas import ImageCreate
 from src.services.tags import get_or_create_tag
 
@@ -11,9 +12,16 @@ from src.services.tags import get_or_create_tag
 async def get_all_images(
     db: AsyncSession,
     user_id: int,
-) -> Sequence[models.Image]:
-    res = await db.execute(select(models.Image).where(models.Image.user_id == user_id))
-    return res.scalars().all()
+    page: int = 1,
+    per_page: int = settings.pagination_size,
+) -> tuple[Sequence[models.Image], int]:
+    base = select(models.Image).where(models.Image.user_id == user_id)
+    count_q = select(func.count()).select_from(base.subquery())
+    total = (await db.execute(count_q)).scalar_one()
+    q = base.offset((page - 1) * per_page).limit(per_page)
+    res = await db.execute(q)
+    images = res.scalars().all()
+    return images, total
 
 
 async def get_image_by_id(

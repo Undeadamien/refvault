@@ -68,3 +68,15 @@ class ImageTagsUpdate(BaseModel):
 class Token(BaseModel):
     access_token: str
     token_type: str
+
+
+class Pagination(BaseModel):
+    current_page: int
+    last_page: int
+    per_page: int
+    total: int
+
+
+class PaginatedImagesResponse(BaseModel):
+    items: List[ImageResponse]
+    meta: Pagination
