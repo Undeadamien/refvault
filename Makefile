@@ -35,4 +35,7 @@ test:
 docs:
 	@xdg-open http://localhost:8000/docs
 
+admin:
+	@xdg-open http://localhost:8000/admin
+
 .PHONY: install up down build logs clean re lint test format docs
