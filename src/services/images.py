@@ -55,7 +55,7 @@ async def delete_image_by_id(
     user_id: int,
     image_id: int,
 ) -> bool:
-    img = await get_image_by_id(db, image_id, user_id)
+    img = await get_image_by_id(db, user_id, image_id)
     if not img:
         return False
     await db.delete(img)
@@ -69,7 +69,7 @@ async def update_image_tags(
     image_id: int,
     tags: list[str],
 ) -> models.Image | None:
-    img = await get_image_by_id(db, image_id, user_id)
+    img = await get_image_by_id(db, user_id, image_id)
     if not img:
         return None
     img.tags = [await get_or_create_tag(db, name) for name in tags]
