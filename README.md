@@ -29,6 +29,5 @@ pytest --cov
 
 - [ ] Create a simple Typer client
 - [ ] File upload
-- [ ] Pagination
 - [ ] Rework the tests
 - [ ] Search by name and tags
