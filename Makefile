@@ -2,7 +2,7 @@ SOURCES = src
 TESTS = tests
 TARGETS = $(SOURCES) $(TESTS)
 
-install:
+dev:
 	pip install -e ".[dev]" black isort pyright
 
 up:
@@ -32,10 +32,12 @@ format:
 test:
 	@pytest --cov
 
+#todo: verify xdg-open
 docs:
 	@xdg-open http://localhost:8000/docs
 
+#todo: verify xdg-open
 admin:
 	@xdg-open http://localhost:8000/admin
 
-.PHONY: install up down build logs clean re lint test format docs
+.PHONY: dev up down build clean re lint test format docs
