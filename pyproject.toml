@@ -17,6 +17,7 @@ dependencies = [
   "pyyaml",
   "sqladmin",
   "sqlalchemy[asyncio]",
+  "itsdangerous",
   "uvicorn[standard]",
 ]
 

@@ -40,4 +40,4 @@ docs:
 admin:
 	@xdg-open http://localhost:8000/admin
 
-.PHONY: dev up down build clean re lint test format docs
+.PHONY: dev up down build clean re lint test format docs admin

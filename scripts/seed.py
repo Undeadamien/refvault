@@ -25,6 +25,9 @@ async def seed():
         users = [
             User(username="alice", hashed_password=hash_password("secret")),
             User(username="bob", hashed_password=hash_password("secret")),
+            User(
+                username="admin", hashed_password=hash_password("admin"), is_admin=True
+            ),
         ]
         db.add_all(users)
         await db.flush()

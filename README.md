@@ -7,7 +7,7 @@
 ![PostgreSQL](https://img.shields.io/badge/POSTGRESQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)
 ![Docker](https://img.shields.io/badge/DOCKER-2496ED?style=for-the-badge&logo=docker&logoColor=white)
 
-A personal image vault API. Users register, log in, and store image URLs organized with tags. Built with FastAPI, PostgreSQL, SQLAlchemy, and Docker. **~98% test coverage.**
+A personal image vault API. Users register, log in, and store image URLs organized with tags. Built with FastAPI, PostgreSQL, SQLAlchemy, and Docker. **>90% test coverage.**
 
 ## Features
 
