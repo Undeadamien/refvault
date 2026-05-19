@@ -13,7 +13,9 @@ class Settings(BaseSettings):
     server_port: int = 8000
     reload: bool = True
 
-    secret_key: str = "7d3fb2c87bbd536c335574cfed3aa19b606cd9d8e85f6bed3c5e65faaf646aa2"  # override via .env for production
+    secret_key: str = (
+        "7d3fb2c87bbd536c335574cfed3aa19b606cd9d8e85f6bed3c5e65faaf646aa2"  # override via .env for production
+    )
     algorithm: str = "HS256"
     access_token_expire_minutes: int = 30
 

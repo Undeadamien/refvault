@@ -83,7 +83,9 @@ async def test_set_tags(test_client_auth):
         json={"url": "https://example.com/test.jpg", "name": "test", "tags": ["test"]},
     )
     img_id = create.json()["id"]
-    res = await test_client_auth.put(f"/images/{img_id}/tags", json={"tags": ["new_tag"]})
+    res = await test_client_auth.put(
+        f"/images/{img_id}/tags", json={"tags": ["new_tag"]}
+    )
     assert res.status_code == 200
     data = res.json()
     assert data["tags"] == ["new_tag"]
