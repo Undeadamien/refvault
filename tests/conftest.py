@@ -53,7 +53,7 @@ async def test_user(test_session):
 
 
 @pytest.fixture
-async def test_client_auth(test_session):
+async def test_client_non_auth(test_session):
     async def override_get_db():
         yield test_session
 
@@ -66,14 +66,12 @@ async def test_client_auth(test_session):
 
 
 @pytest.fixture
-async def test_client(test_session):
+async def test_client_auth(test_session, test_user):
     async def override_get_db():
         yield test_session
 
     app.dependency_overrides[get_db] = override_get_db
-    app.dependency_overrides[get_current_user] = lambda: User(
-        id=1, username="test", hashed_password="secret"
-    )
+    app.dependency_overrides[get_current_user] = lambda: test_user
     async with AsyncClient(
         transport=ASGITransport(app=app), base_url="http://test"
     ) as ac:

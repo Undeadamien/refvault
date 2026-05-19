@@ -2,12 +2,12 @@ import pytest
 
 
 @pytest.mark.asyncio
-async def test_get_tags(test_client):
-    await test_client.post(
+async def test_get_tags(test_client_auth):
+    await test_client_auth.post(
         "/images/",
         json={"url": "https://example.com/t.jpg", "name": "t", "tags": ["manual-tag"]},
     )
-    res = await test_client.get("/tags/")
+    res = await test_client_auth.get("/tags/")
     assert res.status_code == 200
     data = res.json()
     assert data and len(data) == 1
@@ -15,7 +15,7 @@ async def test_get_tags(test_client):
 
 
 @pytest.mark.asyncio
-async def test_get_tags_empty(test_client):
-    res = await test_client.get("/tags/")
+async def test_get_tags_empty(test_client_auth):
+    res = await test_client_auth.get("/tags/")
     assert res.status_code == 200
     assert res.json() == []
