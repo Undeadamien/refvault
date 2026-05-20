@@ -1,7 +1,7 @@
 import pytest
 
-from src.services.images import ImageCreate, create_image
-from src.services.tags import get_or_create_tag, get_user_tags
+from refvault.services.images import ImageCreate, create_image
+from refvault.services.tags import get_or_create_tag, get_user_tags
 
 payloads = [
     ImageCreate(url="https://example.com/test_00.jpg", name="test", tags=["0", "1"]),

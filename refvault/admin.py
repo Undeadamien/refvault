@@ -3,9 +3,9 @@ from sqladmin.authentication import AuthenticationBackend
 from sqlalchemy import select
 from starlette.requests import Request
 
-from src.database import SessionLocal
-from src.models import Image, Tag, User
-from src.services.auth import verify_password
+from refvault.database import SessionLocal
+from refvault.models import Image, Tag, User
+from refvault.services.auth import verify_password
 
 
 class AdminAuth(AuthenticationBackend):

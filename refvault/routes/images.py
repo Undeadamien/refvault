@@ -1,17 +1,17 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.config import settings
-from src.database import get_db
-from src.routes.auth import get_current_user
-from src.schemas import (
+from refvault.config import settings
+from refvault.database import get_db
+from refvault.routes.auth import get_current_user
+from refvault.schemas import (
     ImageCreate,
     ImageResponse,
     ImageTagsUpdate,
     PaginatedImagesResponse,
     Pagination,
 )
-from src.services import images as image_service
+from refvault.services import images as image_service
 
 router = APIRouter(prefix="/images")
 

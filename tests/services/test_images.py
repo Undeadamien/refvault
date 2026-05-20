@@ -1,6 +1,6 @@
 import pytest
 
-from src.services.images import (
+from refvault.services.images import (
     ImageCreate,
     create_image,
     delete_image_by_id,

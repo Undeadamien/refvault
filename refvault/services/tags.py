@@ -3,7 +3,7 @@ from typing import Sequence
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src import models
+from refvault import models
 
 
 async def get_user_tags(db: AsyncSession, user_id: int) -> Sequence[models.Tag]:

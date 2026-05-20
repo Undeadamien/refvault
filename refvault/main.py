@@ -5,10 +5,10 @@ from fastapi import FastAPI
 from sqladmin import Admin
 from starlette.middleware.sessions import SessionMiddleware
 
-from src.admin import AdminAuth, AdminViewImage, AdminViewTag, AdminViewUser
-from src.config import settings
-from src.database import engine
-from src.routes import auth, images, tags
+from refvault.admin import AdminAuth, AdminViewImage, AdminViewTag, AdminViewUser
+from refvault.config import settings
+from refvault.database import engine
+from refvault.routes import auth, images, tags
 
 app = FastAPI(title="RefVault")
 app.add_middleware(SessionMiddleware, secret_key=settings.secret_key)
@@ -24,7 +24,7 @@ admin.add_view(AdminViewImage)
 
 def main():
     uvicorn.run(
-        "src.main:app",
+        "refvault.main:app",
         host=settings.server_addr,
         port=settings.server_port,
         reload=settings.reload,

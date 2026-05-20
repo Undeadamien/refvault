@@ -1,7 +1,7 @@
 import pytest
 
-from src.models import User
-from src.services.auth import (
+from refvault.models import User
+from refvault.services.auth import (
     authenticate_user,
     create_access_token,
     decode_token,

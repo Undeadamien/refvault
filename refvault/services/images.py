@@ -3,10 +3,10 @@ from typing import Sequence
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src import models
-from src.config import settings
-from src.schemas import ImageCreate
-from src.services.tags import get_or_create_tag
+from refvault import models
+from refvault.config import settings
+from refvault.schemas import ImageCreate
+from refvault.services.tags import get_or_create_tag
 
 
 async def get_all_images(

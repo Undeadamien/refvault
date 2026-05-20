@@ -1,7 +1,7 @@
 import pytest
 
-from src.models import User
-from src.services.auth import create_access_token, hash_password
+from refvault.models import User
+from refvault.services.auth import create_access_token, hash_password
 
 
 @pytest.mark.asyncio

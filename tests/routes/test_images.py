@@ -1,6 +1,6 @@
 import pytest
 
-from src.config import settings
+from refvault.config import settings
 
 
 # todo: add more test related to pagination

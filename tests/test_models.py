@@ -1,6 +1,6 @@
 import pytest
 
-from src.models import Image, Tag, User
+from refvault.models import Image, Tag, User
 
 
 @pytest.mark.asyncio

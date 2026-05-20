@@ -1,4 +1,4 @@
-SOURCES = src
+SOURCES = refvault
 TESTS = tests
 TARGETS = $(SOURCES) $(TESTS)
 

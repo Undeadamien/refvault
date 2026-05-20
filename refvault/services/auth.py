@@ -6,8 +6,8 @@ from pwdlib import PasswordHash
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.config import settings
-from src.models import User
+from refvault.config import settings
+from refvault.models import User
 
 password_hash = PasswordHash.recommended()
 

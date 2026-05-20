@@ -21,7 +21,7 @@ dependencies = [
 ]
 
 [project.scripts]
-refvault = "src.main:main"
+refvault = "refvault.main:main"
 
 [project.optional-dependencies]
 dev = [
@@ -41,7 +41,7 @@ requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
 [tool.coverage.run]
-source = ["src"]
+source = ["refvault"]
 concurrency = ["greenlet"]
 
 [tool.coverage.report]
@@ -54,4 +54,4 @@ testpaths = ["tests"]
 asyncio_mode = "auto"
 
 [tool.setuptools.packages.find]
-include = ["src"]
+include = ["refvault"]

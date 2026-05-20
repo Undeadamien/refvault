@@ -4,7 +4,7 @@ from sqlalchemy import Column, ForeignKey, Table
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.sql import func
 
-from src.database import Base
+from refvault.database import Base
 
 image_tags = Table(
     "image_tags",

@@ -4,10 +4,10 @@ from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.database import get_db
-from src.models import User
-from src.schemas import Token, UserCreate
-from src.services.auth import (
+from refvault.database import get_db
+from refvault.models import User
+from refvault.schemas import Token, UserCreate
+from refvault.services.auth import (
     authenticate_user,
     create_access_token,
     decode_token,

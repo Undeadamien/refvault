@@ -2,9 +2,9 @@
 
 import asyncio
 
-from src.database import Base, SessionLocal, engine
-from src.models import Image, Tag, User, image_tags
-from src.services.auth import hash_password
+from refvault.database import Base, SessionLocal, engine
+from refvault.models import Image, Tag, User, image_tags
+from refvault.services.auth import hash_password
 
 
 async def seed():

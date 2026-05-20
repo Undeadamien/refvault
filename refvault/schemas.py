@@ -11,7 +11,7 @@ from pydantic import (
     field_validator,
 )
 
-from src.models import Tag
+from refvault.models import Tag
 
 
 def validate_url(url: str):
