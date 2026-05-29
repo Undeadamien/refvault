@@ -6,7 +6,6 @@ import httpx
 from httpx import ASGITransport
 from sqlalchemy import text
 
-from refvault.config import settings
 from refvault.database import Base, engine
 from refvault.main import app
 
