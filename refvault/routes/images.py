@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from refvault.config import settings
@@ -38,11 +38,14 @@ async def get_images(
 
 @router.post("/", response_model=ImageResponse)
 async def post_image(
+    background_task: BackgroundTasks,
     payload: ImageCreate,
     db: AsyncSession = Depends(get_db),
     user=Depends(get_current_user),
 ):
-    return await image_service.create_image(db, user.id, payload)
+    img = await image_service.create_image(db, user.id, payload)
+    background_task.add_task(image_service.add_color_palette, img.id)
+    return img
 
 
 @router.get("/{id}", response_model=ImageResponse)

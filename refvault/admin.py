@@ -51,6 +51,7 @@ class AdminViewImage(ModelView, model=Image):
         Image.id,
         Image.name,
         Image.url,
+        Image.palette,
         Image.user_id,
         Image.owner,
         Image.tags,

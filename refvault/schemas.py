@@ -58,6 +58,7 @@ class ImageResponse(ImageBase):
     created_at: datetime
     updated_at: Optional[datetime] = None
     tags: List[TagStr] = []
+    palette: Optional[List[str]] = None
     model_config = ConfigDict(from_attributes=True)
 
 
