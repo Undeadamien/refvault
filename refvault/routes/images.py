@@ -44,7 +44,7 @@ async def post_image(
     user=Depends(get_current_user),
 ):
     img = await image_service.create_image(db, user.id, payload)
-    background_task.add_task(image_service.add_color_palette, img.id)
+    background_task.add_task(image_service.add_color_palette, img.id, img.url, db)
     return img
 
 

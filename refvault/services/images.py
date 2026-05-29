@@ -8,7 +8,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from refvault import models
 from refvault.config import settings
-from refvault.database import SessionLocal
 from refvault.schemas import ImageCreate
 from refvault.services.tags import get_or_create_tag
 
@@ -24,18 +23,17 @@ async def extract_palette(url: str) -> List[str]:
     return hexs
 
 
-async def add_color_palette(image_id: int):
-    async with SessionLocal() as db:
-        img = await db.get(models.Image, image_id)
-        if img is None:
-            return
-        try:
-            hexs = await extract_palette(img.url)
-        except Exception as e:
-            logger.warning("palette extraction failed for image %d: %s", image_id, e)
-            return
-        img.palette = hexs
-        await db.commit()
+async def add_color_palette(image_id: int, url: str, db: AsyncSession):
+    try:
+        hexs = await extract_palette(url)
+    except Exception as e:
+        logger.warning("palette extraction failed for image %d: %s", image_id, e)
+        return
+    img = await db.get(models.Image, image_id)
+    if img is None:
+        return
+    img.palette = hexs
+    await db.commit()
 
 
 async def get_all_images(
