@@ -15,6 +15,7 @@ A personal image vault API. Users register, log in, and store image URLs organiz
 - Store image URLs with names and tags
 - Paginated browsing
 - Tag management
+- Automatic color palette extraction from images
 - SQLAdmin panel for data management
 
 ## Quick Start
