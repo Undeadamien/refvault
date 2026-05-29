@@ -29,6 +29,9 @@ format:
 	@black -q --fast $(TARGETS)
 	@isort -q --profile black $(TARGETS)
 
+migrate:
+	docker compose exec app alembic upgrade head
+
 test:
 	@pytest --cov
 
