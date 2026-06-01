@@ -15,6 +15,7 @@ dependencies = [
   "pyjwt",
   "pylette",
   "python-multipart",
+  "slowapi",
   "sqladmin",
   "sqlalchemy[asyncio]",
   "uvicorn[standard]",

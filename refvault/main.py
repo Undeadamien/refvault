@@ -10,10 +10,13 @@ from starlette.middleware.sessions import SessionMiddleware
 from refvault.admin import AdminAuth, AdminViewImage, AdminViewTag, AdminViewUser
 from refvault.config import settings
 from refvault.database import engine
+from refvault.limiter import limiter
 from refvault.routes import auth, images, tags
 
 app = FastAPI(title="RefVault")
 app.add_middleware(SessionMiddleware, secret_key=settings.secret_key)
+app.state.limiter = limiter
+
 app.include_router(auth.router)
 app.include_router(images.router)
 app.include_router(tags.router)

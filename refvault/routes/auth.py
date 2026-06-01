@@ -1,10 +1,11 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from refvault.database import get_db
+from refvault.limiter import limiter
 from refvault.models import User
 from refvault.schemas import Token, UserCreate
 from refvault.services.auth import (
@@ -19,7 +20,9 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
 
 
 @router.post("/login", response_model=Token)
+@limiter.limit("5/minute")
 async def login(
+    request: Request,
     form_data: OAuth2PasswordRequestForm = Depends(),
     db: AsyncSession = Depends(get_db),
 ):
@@ -35,7 +38,9 @@ async def login(
 
 
 @router.post("/register", response_model=Token)
+@limiter.limit("5/minute")
 async def register(
+    request: Request,
     data: UserCreate,
     db: AsyncSession = Depends(get_db),
 ):
