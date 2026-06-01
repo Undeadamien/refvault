@@ -44,6 +44,7 @@ class Image(Base):
     owner: Mapped[User] = relationship(back_populates="images")
     url: Mapped[str] = mapped_column(nullable=False)
     name: Mapped[str] = mapped_column(nullable=False)
+    source: Mapped[Optional[str]] = mapped_column(nullable=True)
     palette: Mapped[Optional[list[str]]] = mapped_column(JSON, nullable=True)
     tags: Mapped[list[Tag]] = relationship("Tag", secondary=image_tags, lazy="selectin")
 

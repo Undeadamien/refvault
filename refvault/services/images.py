@@ -14,18 +14,22 @@ from refvault.services.tags import get_or_create_tag
 logger = logging.getLogger(__name__)
 
 
-async def extract_palette(url: str) -> List[str]:
-    async with httpx.AsyncClient(timeout=10, follow_redirects=True) as client:
-        res = await client.get(str(url))
-        res.raise_for_status()
-    palette = extract_colors(res.content, palette_size=5)
+async def extract_palette(path: str) -> List[str]:
+    if path.startswith("/uploads/"):
+        data = (settings.upload_dir / path.removeprefix("/uploads/")).read_bytes()
+    else:
+        async with httpx.AsyncClient(timeout=10, follow_redirects=True) as client:
+            res = await client.get(str(path))
+            res.raise_for_status()
+            data = res.content
+    palette = extract_colors(data, palette_size=5)
     hexs = [color.hex for color in palette.colors]
     return hexs
 
 
-async def add_color_palette(image_id: int, url: str, db: AsyncSession):
+async def add_color_palette(image_id: int, path: str, db: AsyncSession):
     try:
-        hexs = await extract_palette(url)
+        hexs = await extract_palette(path)
     except Exception as e:
         logger.warning("palette extraction failed for image %d: %s", image_id, e)
         return
@@ -70,7 +74,9 @@ async def create_image(
     user_id: int,
     payload: ImageCreate,
 ) -> models.Image:
-    img = models.Image(url=payload.url, name=payload.name, user_id=user_id)
+    img = models.Image(
+        url=payload.url, name=payload.name, user_id=user_id, source=payload.source
+    )
     img.tags = [await get_or_create_tag(db, name) for name in payload.tags]
     db.add(img)
     await db.commit()

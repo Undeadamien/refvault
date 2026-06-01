@@ -1,6 +1,7 @@
+*.db
+*.egg-info
 .coverage
 .env
 __pycache__
-*.db
-*.egg-info
 build
+uploads/

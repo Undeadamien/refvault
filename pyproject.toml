@@ -1,7 +1,7 @@
 [project]
 name = "RefVault"
 version = "0.1.0"
-description = "Image tagging and vault service"
+description = "Personal image vault with file upload, URL import, and tag-based organization"
 requires-python = ">=3.12"
 dependencies = [
   "alembic",
@@ -9,14 +9,12 @@ dependencies = [
   "fastapi",
   "httpx",
   "itsdangerous",
-  "psycopg2-binary",
   "pwdlib[argon2]",
   "pydantic",
   "pydantic-settings",
   "pyjwt",
   "pylette",
   "python-multipart",
-  "pyyaml",
   "sqladmin",
   "sqlalchemy[asyncio]",
   "uvicorn[standard]",

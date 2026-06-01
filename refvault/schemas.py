@@ -6,16 +6,10 @@ from pydantic import (
     BeforeValidator,
     ConfigDict,
     Field,
-    HttpUrl,
-    TypeAdapter,
     field_validator,
 )
 
 from refvault.models import Tag
-
-
-def validate_url(url: str):
-    return str(TypeAdapter(HttpUrl).validate_python(url))
 
 
 def tag_to_str(v: Any) -> str:
@@ -23,7 +17,6 @@ def tag_to_str(v: Any) -> str:
     return name.strip().lower()
 
 
-UrlStr = Annotated[str, BeforeValidator(validate_url)]
 TagStr = Annotated[str, BeforeValidator(tag_to_str)]
 
 
@@ -45,12 +38,13 @@ class UserCreate(BaseModel):
 
 
 class ImageBase(BaseModel):
-    url: UrlStr
+    url: str
     name: str
 
 
 class ImageCreate(ImageBase):
     tags: List[TagStr] = []
+    source: Optional[str] = None
 
 
 class ImageResponse(ImageBase):
@@ -59,6 +53,7 @@ class ImageResponse(ImageBase):
     updated_at: Optional[datetime] = None
     tags: List[TagStr] = []
     palette: Optional[List[str]] = None
+    source: Optional[str] = None
     model_config = ConfigDict(from_attributes=True)
 
 

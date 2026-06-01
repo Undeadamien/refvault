@@ -1,4 +1,21 @@
-from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query
+import json
+import mimetypes
+import uuid
+from pathlib import Path
+from typing import Optional
+
+import httpx
+from fastapi import (
+    APIRouter,
+    BackgroundTasks,
+    Depends,
+    File,
+    Form,
+    HTTPException,
+    Query,
+    UploadFile,
+)
+from pydantic import HttpUrl, TypeAdapter
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from refvault.config import settings
@@ -39,11 +56,53 @@ async def get_images(
 @router.post("/", response_model=ImageResponse)
 async def post_image(
     background_task: BackgroundTasks,
-    payload: ImageCreate,
+    name: str = Form(...),
+    tags: str = Form("[]"),
+    file: Optional[UploadFile] = File(None),
+    url: Optional[str] = Form(None),
     db: AsyncSession = Depends(get_db),
     user=Depends(get_current_user),
 ):
-    img = await image_service.create_image(db, user.id, payload)
+    if not file and not url:
+        raise HTTPException(400, "provide file or url")
+    if file and url:
+        raise HTTPException(400, "provide file or source url not both")
+
+    if file:
+        assert file.filename is not None  # note: silence the LSP
+        ext = Path(file.filename).suffix.lower()
+        data = await file.read()
+        source = None
+    else:
+        assert url is not None  # note: silence the LSP
+        try:
+            TypeAdapter(HttpUrl).validate_python(url)
+        except Exception:
+            raise HTTPException(422, "invalid URL")
+        source = url
+        async with httpx.AsyncClient(follow_redirects=True, timeout=30) as client:
+            res = await client.get(url)
+            res.raise_for_status()
+            data = res.content
+        ext = mimetypes.guess_extension(res.headers.get("content-type", "")) or ".jpg"
+
+    if ext not in settings.allowed_extensions:
+        raise HTTPException(400, f"unsupported file type: {ext}")
+    if len(data) > settings.max_upload_size:
+        raise HTTPException(400, "file too large")
+
+    rel = Path(str(user.id)) / f"{uuid.uuid4().hex}{ext}"
+    dest = settings.upload_dir / rel
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    dest.write_bytes(data)
+
+    img = await image_service.create_image(
+        db,
+        user.id,
+        ImageCreate(
+            url=f"/uploads/{rel}", name=name, tags=json.loads(tags), source=source
+        ),
+    )
     background_task.add_task(image_service.add_color_palette, img.id, img.url, db)
     return img
 
@@ -66,9 +125,15 @@ async def delete_image(
     db: AsyncSession = Depends(get_db),
     user=Depends(get_current_user),
 ):
-    deleted = await image_service.delete_image_by_id(db, user.id, id)
-    if not deleted:
+    img = await image_service.get_image_by_id(db, user.id, id)
+    if not img:
         raise HTTPException(status_code=404, detail="Image not found")
+    if img.url.startswith("/uploads"):
+        (settings.upload_dir / img.url.removeprefix("/uploads/")).unlink(
+            missing_ok=True
+        )
+    await db.delete(img)
+    await db.commit()
 
 
 @router.put("/{id}/tags", response_model=ImageResponse)

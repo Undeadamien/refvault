@@ -1,7 +1,11 @@
+from pathlib import Path
+from typing import Set
+
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 # todo: add validation
+# todo: breakdown the config into multiple
 class Settings(BaseSettings):
     postgres_user: str = "refvault"
     postgres_password: str = "refvault"
@@ -12,6 +16,10 @@ class Settings(BaseSettings):
     server_addr: str = "0.0.0.0"
     server_port: int = 8000
     reload: bool = True
+
+    upload_dir: Path = Path("uploads")
+    allowed_extensions: Set[str] = {".jpg", ".jpeg", ".png", ".webp"}
+    max_upload_size: int = 10 * 1024 * 1024
 
     secret_key: str = (
         "7d3fb2c87bbd536c335574cfed3aa19b606cd9d8e85f6bed3c5e65faaf646aa2"  # override via .env for production

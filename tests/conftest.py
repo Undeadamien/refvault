@@ -4,6 +4,7 @@ import pytest
 from httpx import ASGITransport, AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
+from refvault.config import settings
 from refvault.database import Base, get_db
 from refvault.main import app
 from refvault.models import User
@@ -77,3 +78,9 @@ async def test_client_auth(test_session, test_user):
     ) as ac:
         yield ac
     app.dependency_overrides.clear()
+
+
+# todo: remove autouse?
+@pytest.fixture(autouse=True)
+def upload_dir(monkeypatch, tmp_path):
+    monkeypatch.setattr(settings, "upload_dir", tmp_path)
