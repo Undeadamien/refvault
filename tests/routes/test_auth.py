@@ -74,7 +74,6 @@ async def test_register(test_client_non_auth):
     assert data["token_type"] == "bearer"
 
 
-# todo: define what is an invalid username
 @pytest.mark.parametrize(
     "username",
     [""],
@@ -86,7 +85,6 @@ async def test_register_invalid_username(test_client_non_auth, username):
     assert res.status_code == 422
 
 
-# todo: define what is an invalid password
 @pytest.mark.parametrize(
     "password",
     [""],

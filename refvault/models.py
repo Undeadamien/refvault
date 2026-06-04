@@ -53,6 +53,5 @@ class Image(Base):
         server_default=func.now(), onupdate=func.now()
     )
 
-    # todo: decide if name or url
     def __str__(self):
         return self.name

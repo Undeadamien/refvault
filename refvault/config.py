@@ -1,11 +1,11 @@
+import os
 from pathlib import Path
 from typing import Set
+from urllib.parse import urlparse, urlunparse
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
-# todo: add validation
-# todo: breakdown the config into multiple
 class Settings(BaseSettings):
     postgres_user: str = "refvault"
     postgres_password: str = "refvault"
@@ -15,7 +15,7 @@ class Settings(BaseSettings):
 
     server_addr: str = "0.0.0.0"
     server_port: int = 8000
-    reload: bool = True
+    reload: bool = False
 
     upload_dir: Path = Path("uploads")
     allowed_extensions: Set[str] = {".jpg", ".jpeg", ".png", ".webp"}
@@ -31,6 +31,9 @@ class Settings(BaseSettings):
 
     @property
     def database_url(self) -> str:
+        if env_url := os.environ.get("DATABASE_URL"):
+            url = env_url.replace("postgresql://", "postgresql+asyncpg://")
+            return urlunparse(urlparse(url)._replace(query=""))
         return (
             f"postgresql+asyncpg://"
             f"{self.postgres_user}:{self.postgres_password}@"

@@ -1,13 +1,7 @@
 from datetime import datetime
 from typing import Annotated, Any, List, Optional
 
-from pydantic import (
-    BaseModel,
-    BeforeValidator,
-    ConfigDict,
-    Field,
-    field_validator,
-)
+from pydantic import BaseModel, BeforeValidator, ConfigDict, Field, field_validator
 
 from refvault.models import Tag
 
@@ -24,7 +18,6 @@ class TagCreate(BaseModel):
     name: TagStr
 
 
-# todo: define proper validation
 class UserCreate(BaseModel):
     username: Annotated[
         str, Field(min_length=3, max_length=10, pattern=r"^[a-zA-Z0-9]+$")

@@ -1,3 +1,4 @@
+import asyncio
 import logging
 from typing import List, Sequence
 
@@ -22,7 +23,7 @@ async def extract_palette(path: str) -> List[str]:
             res = await client.get(str(path))
             res.raise_for_status()
             data = res.content
-    palette = extract_colors(data, palette_size=5)
+    palette = await asyncio.to_thread(extract_colors, data, palette_size=5)
     hexs = [color.hex for color in palette.colors]
     return hexs
 
@@ -68,7 +69,6 @@ async def get_image_by_id(
     return res.scalar_one_or_none()
 
 
-# todo: check for duplicate url
 async def create_image(
     db: AsyncSession,
     user_id: int,

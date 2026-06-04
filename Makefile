@@ -35,11 +35,9 @@ migrate:
 test:
 	@pytest --cov
 
-#todo: verify xdg-open
 docs:
 	@xdg-open http://localhost:8000/docs
 
-#todo: verify xdg-open
 admin:
 	@xdg-open http://localhost:8000/admin
 

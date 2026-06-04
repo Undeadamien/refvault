@@ -53,5 +53,13 @@ pythonpath = ["."]
 testpaths = ["tests"]
 asyncio_mode = "auto"
 
+[tool.black]
+target-version = ["py314"]
+extend-exclude = "/alembic/"
+
+[tool.isort]
+profile = "black"
+extend_skip_glob = ["alembic/**"]
+
 [tool.setuptools.packages.find]
 include = ["refvault"]

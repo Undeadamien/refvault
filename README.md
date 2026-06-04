@@ -5,9 +5,11 @@
 ![SQLAlchemy](https://img.shields.io/badge/SQLALCHEMY-D71F00?style=for-the-badge&logo=sqlalchemy&logoColor=white)
 ![Pydantic](https://img.shields.io/badge/PYDANTIC-E92063?style=for-the-badge&logo=pydantic&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/POSTGRESQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)
+![Fly.io](https://img.shields.io/badge/FLY.IO-5E2C8E?style=for-the-badge&logo=flydotio&logoColor=white)
+![Neon](https://img.shields.io/badge/NEON-00E599?style=for-the-badge&logo=neon&logoColor=white)
 ![Docker](https://img.shields.io/badge/DOCKER-2496ED?style=for-the-badge&logo=docker&logoColor=white)
 
-A personal image vault API. Users register, log in, and store images organized with tags, supporting both **file upload** and **remote URL import**. Built with FastAPI, PostgreSQL, SQLAlchemy, and Docker. **>90% test coverage.**
+An image vault API. Users register, log in, and store images organized with tags, supporting both **file upload** and **remote URL import**. Built with FastAPI, PostgreSQL, SQLAlchemy, and Docker. **>90% test coverage.** Live at **[refvault.fly.dev](https://refvault.fly.dev)**.
 
 ## Features
 
@@ -22,6 +24,7 @@ A personal image vault API. Users register, log in, and store images organized w
 ## Quick Start
 
 ```bash
+cp .env.example .env
 make up
 ```
 

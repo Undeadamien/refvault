@@ -69,12 +69,14 @@ async def post_image(
         raise HTTPException(400, "provide file or source url not both")
 
     if file:
-        assert file.filename is not None  # note: silence the LSP
+        if file.filename is None:
+            raise HTTPException(400, "missing filename")
         ext = Path(file.filename).suffix.lower()
         data = await file.read()
         source = None
     else:
-        assert url is not None  # note: silence the LSP
+        if url is None:
+            raise HTTPException(400, "missing url")
         try:
             TypeAdapter(HttpUrl).validate_python(url)
         except Exception:
@@ -84,7 +86,11 @@ async def post_image(
             res = await client.get(url)
             res.raise_for_status()
             data = res.content
-        ext = mimetypes.guess_extension(res.headers.get("content-type", "")) or ".jpg"
+        ext = (
+            Path(url).suffix.lower()
+            or mimetypes.guess_extension(res.headers.get("content-type", ""))
+            or ""
+        )
 
     if ext not in settings.allowed_extensions:
         raise HTTPException(400, f"unsupported file type: {ext}")

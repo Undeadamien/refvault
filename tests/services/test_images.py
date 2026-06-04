@@ -15,7 +15,6 @@ payloads = [
 ]
 
 
-# todo: add more test related to pagination
 @pytest.mark.asyncio
 async def test_get_all_images(test_session, test_user):
     for payload in payloads:

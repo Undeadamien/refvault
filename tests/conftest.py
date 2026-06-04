@@ -80,7 +80,6 @@ async def test_client_auth(test_session, test_user):
     app.dependency_overrides.clear()
 
 
-# todo: remove autouse?
 @pytest.fixture(autouse=True)
 def upload_dir(monkeypatch, tmp_path):
     monkeypatch.setattr(settings, "upload_dir", tmp_path)
