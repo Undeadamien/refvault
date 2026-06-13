@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+from contextlib import asynccontextmanager
 
 import uvicorn
 from fastapi import FastAPI
@@ -15,8 +16,18 @@ from refvault.config import settings
 from refvault.database import engine
 from refvault.limiter import limiter
 from refvault.routes import auth, images, tags
+from refvault.services.cache import close as cache_close
+from refvault.services.cache import init as cache_init
 
-app = FastAPI(title="RefVault")
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    await cache_init()
+    yield
+    await cache_close()
+
+
+app = FastAPI(title="RefVault", lifespan=lifespan)
 app.add_middleware(SessionMiddleware, secret_key=settings.secret_key)
 app.state.limiter = limiter
 

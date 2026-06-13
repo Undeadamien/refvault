@@ -27,6 +27,10 @@ class Settings(BaseSettings):
     algorithm: str = "HS256"
     access_token_expire_minutes: int = 30
 
+    redis_url: str = "redis://localhost:6379/0"
+
+    cache_ttl: int = 300
+
     pagination_size: int = 24
 
     @property

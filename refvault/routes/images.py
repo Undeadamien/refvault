@@ -28,6 +28,7 @@ from refvault.schemas import (
     PaginatedImagesResponse,
     Pagination,
 )
+from refvault.services import cache
 from refvault.services import images as image_service
 
 router = APIRouter(prefix="/images")
@@ -40,9 +41,14 @@ async def get_images(
     db: AsyncSession = Depends(get_db),
     user=Depends(get_current_user),
 ):
+    cache_key = cache.key("images", "list", str(user.id), str(page), str(per_page))
+    cached = await cache.get(cache_key)
+    if cached is not None:
+        return PaginatedImagesResponse(**cached)
+
     images, total = await image_service.get_all_images(db, user.id, page, per_page)
     last_page = max(1, (total + per_page - 1) // per_page)
-    return PaginatedImagesResponse(
+    result = PaginatedImagesResponse(
         items=[ImageResponse.model_validate(img) for img in images],
         meta=Pagination(
             current_page=page,
@@ -51,6 +57,8 @@ async def get_images(
             total=total,
         ),
     )
+    await cache.set(cache_key, result.model_dump(mode="json"))
+    return result
 
 
 @router.post("/", response_model=ImageResponse)
@@ -109,6 +117,8 @@ async def post_image(
             url=f"/uploads/{rel}", name=name, tags=json.loads(tags), source=source
         ),
     )
+    await cache.delete_pattern(cache.key("images", "list", str(user.id), "*"))
+    await cache.delete_pattern(cache.key("tags", "list", str(user.id)))
     background_task.add_task(image_service.add_color_palette, img.id, img.url, db)
     return img
 
@@ -119,10 +129,17 @@ async def get_image(
     db: AsyncSession = Depends(get_db),
     user=Depends(get_current_user),
 ):
+    cache_key = cache.key("images", "detail", str(user.id), str(id))
+    cached = await cache.get(cache_key)
+    if cached is not None:
+        return ImageResponse(**cached)
+
     img = await image_service.get_image_by_id(db, user.id, id)
     if not img:
         raise HTTPException(status_code=404, detail="Image not found")
-    return img
+    result = ImageResponse.model_validate(img)
+    await cache.set(cache_key, result.model_dump(mode="json"))
+    return result
 
 
 @router.delete("/{id}", status_code=204)
@@ -140,6 +157,9 @@ async def delete_image(
         )
     await db.delete(img)
     await db.commit()
+    await cache.delete_pattern(cache.key("images", "list", str(user.id), "*"))
+    await cache.delete(cache.key("images", "detail", str(user.id), str(id)))
+    await cache.delete_pattern(cache.key("tags", "list", str(user.id)))
 
 
 @router.put("/{id}/tags", response_model=ImageResponse)
@@ -152,4 +172,7 @@ async def set_tags(
     img = await image_service.update_image_tags(db, user.id, id, payload.tags)
     if not img:
         raise HTTPException(status_code=404, detail="Image not found")
+    await cache.delete_pattern(cache.key("images", "list", str(user.id), "*"))
+    await cache.delete(cache.key("images", "detail", str(user.id), str(id)))
+    await cache.delete_pattern(cache.key("tags", "list", str(user.id)))
     return img
