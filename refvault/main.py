@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-
+import logging
 from contextlib import asynccontextmanager
 
 import uvicorn
@@ -18,6 +18,8 @@ from refvault.limiter import limiter
 from refvault.routes import auth, images, tags
 from refvault.services.cache import close as cache_close
 from refvault.services.cache import init as cache_init
+
+logger = logging.getLogger(__name__)
 
 
 @asynccontextmanager
@@ -54,16 +56,13 @@ try:
     admin.add_view(AdminViewUser)
     admin.add_view(AdminViewTag)
     admin.add_view(AdminViewImage)
-except Exception:
-    pass
+except Exception as e:
+    logger.warning("Admin panel not available: %s", e)
 
 
 def run_migrations():
-    try:
-        alembic_cfg = Config("alembic.ini")
-        command.upgrade(alembic_cfg, "head")
-    except Exception:
-        pass
+    alembic_cfg = Config("alembic.ini")
+    command.upgrade(alembic_cfg, "head")
 
 
 def main():
