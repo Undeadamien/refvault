@@ -1,6 +1,6 @@
 import asyncio
 import logging
-from typing import List, Sequence
+from typing import List, Optional, Sequence
 
 import httpx
 from Pylette import extract_colors
@@ -48,12 +48,19 @@ async def get_all_images(
     user_id: int,
     page: int = 1,
     per_page: int = settings.pagination_size,
+    q: Optional[str] = None,
 ) -> tuple[Sequence[models.Image], int]:
     base = select(models.Image).where(models.Image.user_id == user_id)
+    if q:
+        pattern = f"%{q}%"
+        base = base.where(
+            models.Image.name.ilike(pattern)
+            | models.Image.tags.any(models.Tag.name.ilike(pattern))
+        )
     count_q = select(func.count()).select_from(base.subquery())
     total = (await db.execute(count_q)).scalar_one()
-    q = base.offset((page - 1) * per_page).limit(per_page)
-    res = await db.execute(q)
+    query = base.offset((page - 1) * per_page).limit(per_page)
+    res = await db.execute(query)
     images = res.scalars().all()
     return images, total
 
@@ -82,7 +89,6 @@ async def create_image(
     img.tags = [await get_or_create_tag(db, name) for name in payload.tags]
     db.add(img)
     await db.commit()
-    await db.refresh(img)
     return img
 
 
@@ -110,5 +116,4 @@ async def update_image_tags(
         return None
     img.tags = [await get_or_create_tag(db, name) for name in tags]
     await db.commit()
-    await db.refresh(img)
     return img

@@ -38,15 +38,16 @@ router = APIRouter(prefix="/images")
 async def get_images(
     page: int = Query(1, ge=1),
     per_page: int = Query(settings.pagination_size, ge=1),
+    q: Optional[str] = Query(None),
     db: AsyncSession = Depends(get_db),
     user=Depends(get_current_user),
 ):
-    cache_key = cache.key("images", "list", str(user.id), str(page), str(per_page))
+    cache_key = cache.key("images", "list", str(user.id), str(page), str(per_page), str(q))
     cached = await cache.get(cache_key)
     if cached is not None:
         return PaginatedImagesResponse(**cached)
 
-    images, total = await image_service.get_all_images(db, user.id, page, per_page)
+    images, total = await image_service.get_all_images(db, user.id, page, per_page, q)
     last_page = max(1, (total + per_page - 1) // per_page)
     result = PaginatedImagesResponse(
         items=[ImageResponse.model_validate(img) for img in images],

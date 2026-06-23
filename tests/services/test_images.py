@@ -1,7 +1,7 @@
 import pytest
 
+from refvault.schemas import ImageCreate
 from refvault.services.images import (
-    ImageCreate,
     create_image,
     delete_image_by_id,
     get_all_images,
@@ -66,3 +66,44 @@ async def test_update_image_tags(test_session, test_user):
 async def test_update_image_tags_invalid(test_session, test_user):
     updated = await update_image_tags(test_session, test_user.id, 0, [])
     assert not updated
+
+
+@pytest.mark.asyncio
+async def test_get_all_images_search_by_name(test_session, test_user):
+    await create_image(
+        test_session, test_user.id,
+        ImageCreate(url="https://example.com/a.jpg", name="forest path", tags=[]),
+    )
+    await create_image(
+        test_session, test_user.id,
+        ImageCreate(url="https://example.com/b.jpg", name="city skyline", tags=[]),
+    )
+    imgs, total = await get_all_images(test_session, test_user.id, q="forest")
+    assert total == 1
+    assert imgs[0].name == "forest path"
+
+
+@pytest.mark.asyncio
+async def test_get_all_images_search_by_tag(test_session, test_user):
+    await create_image(
+        test_session, test_user.id,
+        ImageCreate(url="https://example.com/a.jpg", name="forest", tags=["nature"]),
+    )
+    await create_image(
+        test_session, test_user.id,
+        ImageCreate(url="https://example.com/b.jpg", name="city", tags=["architecture"]),
+    )
+    imgs, total = await get_all_images(test_session, test_user.id, q="nature")
+    assert total == 1
+    assert imgs[0].name == "forest"
+
+
+@pytest.mark.asyncio
+async def test_get_all_images_search_no_match(test_session, test_user):
+    await create_image(
+        test_session, test_user.id,
+        ImageCreate(url="https://example.com/a.jpg", name="forest", tags=[]),
+    )
+    imgs, total = await get_all_images(test_session, test_user.id, q="nonexistent")
+    assert total == 0
+    assert len(imgs) == 0

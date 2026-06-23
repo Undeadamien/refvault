@@ -172,3 +172,45 @@ async def test_set_tags_invalid(test_client_auth):
     res = await test_client_auth.put("/images/9999/tags", json={"tags": ["new_tag"]})
     assert res.status_code == 404
     assert res.json()["detail"] == "Image not found"
+
+
+@pytest.mark.asyncio
+async def test_search_images_by_name(test_client_auth):
+    await test_client_auth.post(
+        "/images/",
+        files={
+            "file": ("test.jpg", b"fake-image-data", "image/jpeg"),
+            "name": (None, "forest path"),
+            "tags": (None, "[]"),
+        },
+    )
+    await test_client_auth.post(
+        "/images/",
+        files={
+            "file": ("test2.jpg", b"fake-image-data", "image/jpeg"),
+            "name": (None, "city skyline"),
+            "tags": (None, "[]"),
+        },
+    )
+    res = await test_client_auth.get("/images/?q=forest")
+    assert res.status_code == 200
+    data = res.json()
+    assert data["meta"]["total"] == 1
+    assert data["items"][0]["name"] == "forest path"
+
+
+@pytest.mark.asyncio
+async def test_search_images_no_match(test_client_auth):
+    await test_client_auth.post(
+        "/images/",
+        files={
+            "file": ("test.jpg", b"fake-image-data", "image/jpeg"),
+            "name": (None, "forest"),
+            "tags": (None, "[]"),
+        },
+    )
+    res = await test_client_auth.get("/images/?q=nonexistent")
+    assert res.status_code == 200
+    data = res.json()
+    assert data["meta"]["total"] == 0
+    assert data["items"] == []

@@ -4,7 +4,7 @@ from sqlalchemy.orm import DeclarativeBase
 from refvault.config import settings
 
 engine = create_async_engine(settings.database_url)
-SessionLocal = async_sessionmaker(autocommit=False, autoflush=False, bind=engine)
+SessionLocal = async_sessionmaker(autocommit=False, autoflush=False, expire_on_commit=False, bind=engine)
 
 
 class Base(DeclarativeBase):
