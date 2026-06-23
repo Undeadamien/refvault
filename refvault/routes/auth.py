@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from refvault.database import get_db
 from refvault.limiter import limiter
 from refvault.models import User
-from refvault.schemas import Token, UserCreate
+from refvault.schemas import Token, UserCreate, UserResponse, UserUpdate
 from refvault.services.auth import (
     authenticate_user,
     create_access_token,
@@ -71,3 +71,30 @@ async def get_current_user(
     if user is None:
         raise HTTPException(status_code=401, detail="User not found")
     return user
+
+
+@router.get("/me", response_model=UserResponse)
+async def get_me(user=Depends(get_current_user)):
+    return user
+
+
+@router.put("/me", response_model=UserResponse)
+async def update_me(
+    payload: UserUpdate,
+    db: AsyncSession = Depends(get_db),
+    user=Depends(get_current_user),
+):
+    if payload.password is not None:
+        user.hashed_password = hash_password(payload.password)
+    await db.commit()
+    await db.refresh(user)
+    return user
+
+
+@router.delete("/me", status_code=204)
+async def delete_me(
+    db: AsyncSession = Depends(get_db),
+    user=Depends(get_current_user),
+):
+    await db.delete(user)
+    await db.commit()

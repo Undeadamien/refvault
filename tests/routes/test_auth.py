@@ -102,3 +102,41 @@ async def test_register_user_duplicate(test_client_non_auth):
     await test_client_non_auth.post("/auth/register", json=body)
     res = await test_client_non_auth.post("/auth/register", json=body)
     assert res.status_code == 409
+
+
+@pytest.mark.asyncio
+async def test_get_me(test_client_auth, test_user):
+    res = await test_client_auth.get("/auth/me")
+    assert res.status_code == 200
+    data = res.json()
+    assert data["id"] == test_user.id
+    assert data["username"] == test_user.username
+
+
+@pytest.mark.asyncio
+async def test_get_me_unauthorized(test_client_non_auth):
+    res = await test_client_non_auth.get("/auth/me")
+    assert res.status_code == 401
+
+
+@pytest.mark.asyncio
+async def test_update_me_password(test_client_auth, test_session, test_user):
+    res = await test_client_auth.put("/auth/me", json={"password": "newpass"})
+    assert res.status_code == 200
+    data = {"username": test_user.username, "password": "newpass"}
+    login = await test_client_auth.post("/auth/login", data=data)
+    assert login.status_code == 200
+
+
+@pytest.mark.asyncio
+async def test_delete_me(test_client_auth):
+    res = await test_client_auth.delete("/auth/me")
+    assert res.status_code == 204
+
+
+@pytest.mark.asyncio
+async def test_delete_me_removes_user(test_client_auth, test_session, test_user):
+    await test_client_auth.delete("/auth/me")
+    data = {"username": test_user.username, "password": "secret"}
+    login = await test_client_auth.post("/auth/login", data=data)
+    assert login.status_code == 401

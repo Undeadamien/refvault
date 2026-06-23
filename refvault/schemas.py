@@ -30,6 +30,17 @@ class UserCreate(BaseModel):
         return v.strip()
 
 
+class UserResponse(BaseModel):
+    id: int
+    username: str
+    is_admin: bool
+    model_config = ConfigDict(from_attributes=True)
+
+
+class UserUpdate(BaseModel):
+    password: Optional[str] = None
+
+
 class ImageBase(BaseModel):
     url: str
     name: str
