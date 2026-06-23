@@ -71,11 +71,13 @@ async def test_update_image_tags_invalid(test_session, test_user):
 @pytest.mark.asyncio
 async def test_get_all_images_search_by_name(test_session, test_user):
     await create_image(
-        test_session, test_user.id,
+        test_session,
+        test_user.id,
         ImageCreate(url="https://example.com/a.jpg", name="forest path", tags=[]),
     )
     await create_image(
-        test_session, test_user.id,
+        test_session,
+        test_user.id,
         ImageCreate(url="https://example.com/b.jpg", name="city skyline", tags=[]),
     )
     imgs, total = await get_all_images(test_session, test_user.id, q="forest")
@@ -86,12 +88,16 @@ async def test_get_all_images_search_by_name(test_session, test_user):
 @pytest.mark.asyncio
 async def test_get_all_images_search_by_tag(test_session, test_user):
     await create_image(
-        test_session, test_user.id,
+        test_session,
+        test_user.id,
         ImageCreate(url="https://example.com/a.jpg", name="forest", tags=["nature"]),
     )
     await create_image(
-        test_session, test_user.id,
-        ImageCreate(url="https://example.com/b.jpg", name="city", tags=["architecture"]),
+        test_session,
+        test_user.id,
+        ImageCreate(
+            url="https://example.com/b.jpg", name="city", tags=["architecture"]
+        ),
     )
     imgs, total = await get_all_images(test_session, test_user.id, q="nature")
     assert total == 1
@@ -101,7 +107,8 @@ async def test_get_all_images_search_by_tag(test_session, test_user):
 @pytest.mark.asyncio
 async def test_get_all_images_search_no_match(test_session, test_user):
     await create_image(
-        test_session, test_user.id,
+        test_session,
+        test_user.id,
         ImageCreate(url="https://example.com/a.jpg", name="forest", tags=[]),
     )
     imgs, total = await get_all_images(test_session, test_user.id, q="nonexistent")

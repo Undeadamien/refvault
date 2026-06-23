@@ -42,7 +42,9 @@ async def get_images(
     db: AsyncSession = Depends(get_db),
     user=Depends(get_current_user),
 ):
-    cache_key = cache.key("images", "list", str(user.id), str(page), str(per_page), str(q))
+    cache_key = cache.key(
+        "images", "list", str(user.id), str(page), str(per_page), str(q)
+    )
     cached = await cache.get(cache_key)
     if cached is not None:
         return PaginatedImagesResponse(**cached)
