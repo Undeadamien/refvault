@@ -119,7 +119,7 @@ async def post_image(
     )
     await cache.delete_pattern(cache.key("images", "list", str(user.id), "*"))
     await cache.delete_pattern(cache.key("tags", "list", str(user.id)))
-    background_task.add_task(image_service.add_color_palette, img.id, img.url, db)
+    background_task.add_task(image_service.add_color_palette, img.id, img.url)
     return img
 
 
