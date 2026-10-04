@@ -127,6 +127,22 @@ async def test_create_image_wrong_extension(test_client_auth):
     assert res.status_code == 400
 
 
+@pytest.mark.parametrize("tags", ["not-json", '{"a": 1}', "123", '"a"', "[1, 2]"])
+@pytest.mark.asyncio
+async def test_create_image_malformed_tags(test_client_auth, tmp_path, tags):
+    res = await test_client_auth.post(
+        "/images/",
+        files={
+            "file": ("test.jpg", b"fake-image-data", "image/jpeg"),
+            "name": (None, "test"),
+            "tags": (None, tags),
+        },
+    )
+    assert res.status_code == 422
+    assert res.json()["detail"] == "tags must be a JSON list of strings"
+    assert list(tmp_path.iterdir()) == []
+
+
 @pytest.mark.asyncio
 async def test_delete_image(test_client_auth):
     create = await test_client_auth.post(

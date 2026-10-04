@@ -3,7 +3,7 @@ import logging
 from typing import List, Optional, Sequence
 
 import httpx
-from Pylette import extract_colors
+from pylette import extract_colors
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 

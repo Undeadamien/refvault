@@ -13,7 +13,7 @@ dependencies = [
   "pydantic",
   "pydantic-settings",
   "pyjwt",
-  "pylette",
+  "pylette>=3",
   "python-multipart",
   "redis",
   "aiocache[redis]",

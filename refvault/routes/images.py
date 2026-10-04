@@ -79,6 +79,15 @@ async def post_image(
     if file and url:
         raise HTTPException(400, "provide file or source url not both")
 
+    try:
+        tag_names = json.loads(tags)
+    except json.JSONDecodeError:
+        raise HTTPException(422, "tags must be a JSON list of strings")
+    if not isinstance(tag_names, list) or not all(
+        isinstance(name, str) for name in tag_names
+    ):
+        raise HTTPException(422, "tags must be a JSON list of strings")
+
     if file:
         if file.filename is None:
             raise HTTPException(400, "missing filename")
@@ -116,9 +125,7 @@ async def post_image(
     img = await image_service.create_image(
         db,
         user.id,
-        ImageCreate(
-            url=f"/uploads/{rel}", name=name, tags=json.loads(tags), source=source
-        ),
+        ImageCreate(url=f"/uploads/{rel}", name=name, tags=tag_names, source=source),
     )
     await cache.delete_pattern(cache.key("images", "list", str(user.id), "*"))
     await cache.delete_pattern(cache.key("tags", "list", str(user.id)))
