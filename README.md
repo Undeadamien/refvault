@@ -9,7 +9,7 @@
 ![Neon](https://img.shields.io/badge/NEON-00E599?style=for-the-badge&logo=neon&logoColor=white)
 ![Docker](https://img.shields.io/badge/DOCKER-2496ED?style=for-the-badge&logo=docker&logoColor=white)
 
-An image vault API. Users register, log in, and store images organized with tags, supporting both **file upload** and **remote URL import**. Built with FastAPI, PostgreSQL, SQLAlchemy, and Docker. **>90% test coverage.** Live at **[refvault.fly.dev](https://refvault.fly.dev)**.
+An image vault API. Users register, log in, and store images organized with tags, supporting both **file upload** and **remote URL import**. Built with FastAPI, PostgreSQL, SQLAlchemy, and Docker. Live at **[refvault.fly.dev](https://refvault.fly.dev)**.
 
 ## Features
 
