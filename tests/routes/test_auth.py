@@ -1,6 +1,8 @@
 import pytest
+from sqlalchemy import select
 
-from refvault.models import User
+from refvault.config import settings
+from refvault.models import Image, User
 from refvault.services.auth import create_access_token, hash_password
 
 
@@ -140,3 +142,28 @@ async def test_delete_me_removes_user(test_client_auth, test_session, test_user)
     data = {"username": test_user.username, "password": "secret"}
     login = await test_client_auth.post("/auth/login", data=data)
     assert login.status_code == 401
+
+
+@pytest.mark.asyncio
+async def test_delete_me_removes_images_and_files(
+    test_client_auth, test_session, test_user
+):
+    created = await test_client_auth.post(
+        "/images/",
+        files={
+            "file": ("test.jpg", b"fake-image-data", "image/jpeg"),
+            "name": (None, "test"),
+            "tags": (None, "[]"),
+        },
+    )
+    url = created.json()["url"]
+    path = settings.upload_dir / url.removeprefix("/uploads/")
+    assert path.exists()
+
+    assert (await test_client_auth.delete("/auth/me")).status_code == 204
+
+    remaining = await test_session.execute(
+        select(Image).where(Image.user_id == test_user.id)
+    )
+    assert remaining.scalars().all() == []
+    assert not path.exists()

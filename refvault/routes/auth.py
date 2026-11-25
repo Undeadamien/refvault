@@ -4,9 +4,10 @@ from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from refvault.config import settings
 from refvault.database import get_db
 from refvault.limiter import limiter
-from refvault.models import User
+from refvault.models import Image, User
 from refvault.schemas import Token, UserCreate, UserResponse, UserUpdate
 from refvault.services.auth import (
     authenticate_user,
@@ -96,5 +97,17 @@ async def delete_me(
     db: AsyncSession = Depends(get_db),
     user=Depends(get_current_user),
 ):
+    images = (
+        (await db.execute(select(Image).where(Image.user_id == user.id)))
+        .scalars()
+        .all()
+    )
+    for img in images:
+        if img.url.startswith("/uploads/"):
+            (settings.upload_dir / img.url.removeprefix("/uploads/")).unlink(
+                missing_ok=True
+            )
+        await db.delete(img)
+    await db.flush()
     await db.delete(user)
     await db.commit()

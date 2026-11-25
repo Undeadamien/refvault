@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import asyncio
+import json
 
 import httpx
 from httpx import ASGITransport
@@ -77,11 +78,10 @@ async def seed():
         for name, url, tags, owner in image_specs:
             r = await client.post(
                 "/images/",
-                json={"url": url, "name": name, "tags": tags},
+                data={"url": url, "name": name, "tags": json.dumps(tags)},
                 headers={"Authorization": f"Bearer {tokens[owner]}"},
             )
             r.raise_for_status()
-            img = r.json()
             print(f"Created: {name}")
 
     print("Waiting for palette extraction...")

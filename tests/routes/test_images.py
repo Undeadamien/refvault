@@ -90,6 +90,25 @@ async def test_create_image_from_url(test_client_auth):
 
 
 @pytest.mark.asyncio
+async def test_create_image_from_url_with_query_string(test_client_auth):
+    with patch("httpx.AsyncClient.get", new_callable=AsyncMock) as mock_get:
+        mock_res = MagicMock()
+        mock_res.status_code = 200
+        mock_res.content = b"fake-remote-image"
+        mock_res.headers = {"content-type": "image/jpeg"}
+        mock_get.return_value = mock_res
+        res = await test_client_auth.post(
+            "/images/",
+            data={
+                "url": "https://example.com/photo.jpg?token=abc",
+                "name": "test",
+                "tags": "[]",
+            },
+        )
+    assert res.status_code == 200
+
+
+@pytest.mark.asyncio
 async def test_create_image_wrong_url(test_client_auth):
     res = await test_client_auth.post(
         "/images/",

@@ -3,6 +3,7 @@ import mimetypes
 import uuid
 from pathlib import Path
 from typing import Optional
+from urllib.parse import urlparse
 
 import httpx
 from fastapi import (
@@ -107,7 +108,7 @@ async def post_image(
             res.raise_for_status()
             data = res.content
         ext = (
-            Path(url).suffix.lower()
+            Path(urlparse(url).path).suffix.lower()
             or mimetypes.guess_extension(res.headers.get("content-type", ""))
             or ""
         )
